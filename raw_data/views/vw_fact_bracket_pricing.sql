@@ -7,7 +7,7 @@ WITH fact_bracket_pricing AS
       SUM(cost) AS unit_cost,
       SUM(quantity) AS qty_purchased,
       SUM(quantity) * SUM(cost) AS total_cost
-    FROM `gcp-boavista-737.raw.price_quote`
+    FROM `<schema_aqui>.raw.price_quote`
     WHERE  bracket_pricing = "Yes"
     GROUP BY tube_assembly_id, supplier, quote_date, bracket_pricing
 ),

@@ -1,7 +1,7 @@
 WITH CTE AS 
 (
     SELECT DISTINCT tube_assembly_id, component_id, CAST(quantity AS NUMERIC) AS quantity
-    FROM `gcp-boavista-737.raw.bill_of_materials`, 
+    FROM `<schema_aqui>.raw.bill_of_materials`,
     UNNEST
     ([
         NULLIF(quantity_1, 'NA'),

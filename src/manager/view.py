@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from google.cloud import bigquery
 
-VIEWS_DIR = os.getcwd() + "/raw_data/views/"
+VIEWS_DIR = os.getcwd() + "/raw_data/tmp/"
 
 
 class ViewManager:

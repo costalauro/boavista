@@ -34,36 +34,46 @@ function build_gcp_enviroment() {
     echo "construindo configuração no GCP, aguarde.."
     echo "-----------------------------------"
 
-    gcloud config configurations create $"{CONFIG}"
-    gcloud config configurations activate $"{CONFIG}"
+    gcloud config configurations create ${CONFIG}
+    gcloud config configurations activate ${CONFIG}
 
     echo "-----------------------------------"
     echo "configurando zona, region project e account.. "
     echo "-----------------------------------"
 
-    gcloud config set compute/zone $"{ZONE}"
-    gcloud config set compute/region $"{REGION}"
-    gcloud config set project $"{PROJECT_ID}"
-    gcloud config set account $"{GCP_ACCOUNT}"
+    gcloud config set compute/zone ${ZONE}
+    gcloud config set compute/region ${REGION}
+    gcloud config set project ${PROJECT_ID}
+    gcloud config set account ${GCP_ACCOUNT}
 
-    gcloud projects create $"{PROJECT_ID}" \
+    gcloud projects create ${PROJECT_ID} \
         --quiet
 
-    gcloud iam service-accounts create $"{SVC_NAME}" \
-        --display-name $"{SVC_NAME}" \
+    gcloud iam service-accounts create ${SVC_NAME} \
+        --display-name ${SVC_NAME} \
         --quiet
 
-    gcloud projects add-iam-policy-binding $"{PROJECT_ID}" \
-        --member serviceAccount:$"{SVC_NAME}"@$"{PROJECT_ID}".iam.gserviceaccount.com \
+    gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+        --member serviceAccount:${SVC_NAME}@${PROJECT_ID}.iam.gserviceaccount.com \
         --role roles/owner \
         --quiet
 
     gcloud iam service-accounts keys create .private/account.json \
-        --iam-account=$"{SVC_NAME}"@$"{PROJECT_ID}".iam.gserviceaccount.com \
+        --iam-account=${SVC_NAME}@${PROJECT_ID}.iam.gserviceaccount.com \
         --quiet
 
     export GOOGLE_APPLICATION_CREDENTIALS="./.private/account.json"
 
+}
+
+function replace_schema_sql() {
+    mkdir ./raw_data/tmp
+    cp ./raw_data/views/vw_fact_bill_of_materials.sql ./raw_data/tmp/vw_fact_bill_of_materials.sql
+    cp ./raw_data/views/vw_fact_bracket_pricing.sql ./raw_data/tmp/vw_fact_bracket_pricing.sql
+    cp ./raw_data/views/vw_fact_non_bracket_pricing.sql ./raw_data/tmp/vw_fact_non_bracket_pricing.sql
+    rpl "<schema_aqui>" ${PROJECT_ID} ./raw_data/tmp/vw_fact_bill_of_materials.sql
+    rpl "<schema_aqui>" ${PROJECT_ID} ./raw_data/tmp/vw_fact_bracket_pricing.sql
+    rpl "<schema_aqui>" ${PROJECT_ID} ./raw_data/tmp/vw_fact_non_bracket_pricing.sql
 }
 
 function build_venv() {
@@ -87,9 +97,11 @@ function run_pipeline() {
     echo "-----------------------------------"
 
     ./boa_vista_env/bin/python3 src/main.py
+
+    rm ./raw_data/tmp/*
 }
 
-if test -z "${GCP_ACCOUNT}"; then
+if test -z ${GCP_ACCOUNT}; then
   echo "ERRO: Informe a variavel GCP_ACCOUNT!"
   exit 1
 fi
@@ -97,6 +109,7 @@ fi
 create_gcp_config_file;
 set_env_vars;
 build_gcp_enviroment;
+replace_schema_sql;
 build_venv;
 sleep 3
 run_pipeline;
