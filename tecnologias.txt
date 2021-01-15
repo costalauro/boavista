@@ -1,0 +1,4 @@
+Google Cloud Plataform
+BigQuery
+BigTable
+Python3
