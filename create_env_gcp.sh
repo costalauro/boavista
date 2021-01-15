@@ -1,3 +1,4 @@
+#!/bin/bash
 function create_gcp_config_file(){
 
     echo "-----------------------------------"
