@@ -34,5 +34,3 @@ Os logs da operação podem ser visualizados no arquivo resultado.log localizado
 
 ## Modelo conceitual
 Encontra-se na raiz do projeto.
-
-## Dashboard
