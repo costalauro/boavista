@@ -29,6 +29,9 @@ Para excluir o ambiente execute:
 ```
 ./delete_env_gcp.sh
 ```
+
+Os logs da operação podem ser visualizados no arquivo resultado.log localizado no diretório src\
+
 ## Modelo conceitual
 Encontra-se na raiz do projeto.
 
